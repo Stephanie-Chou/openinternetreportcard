@@ -1,5 +1,4 @@
 require "Twitter"
-
 client = Twitter::REST::Client.new do |config|
   config.consumer_key        = "Gbds4c1bCCtNYcwPQE1LNgVPw"
   config.consumer_secret     = "QC4QE9ECYhx8ZYWHlrrYTnAB9i3mQkn3ipu4eRWIx9MhrfJoCg"
@@ -7,28 +6,50 @@ client = Twitter::REST::Client.new do |config|
   config.access_token_secret = "TqzsYqm1ZAoHqn6nFxUGi3P8Tq3NIx9lAwJjYjF9D1eI5"
 end
 
+
 class User
 
-	def initialize(args)
-		@handle = args[:handle]
-		@followers
-		@avgTweetTime
-	end
-	def getTweetsFrom(handle,num, client)
-		client.search("from:#{handle}", :result_type =>"recent").take(num).each do |tweet|
-			p tweet.text
-		end
-	end
+  def initialize(args)
+    @client = args[:client]
+    @handle = args[:handle]
+  end
+  def tweetsFrom
+    tweets = []
+    @client.search("from:#{@handle}").each do |tweet|
+      tweets << tweet
+    end
+    tweets
+  end
 
-end	
+  def tweetText
+    tweets = []
+    tweetsFrom.each do |tweet|
+      tweets << tweet.text
+    end
+    tweets
+  end
+  def tweetTimes
+    hours = []
+    tweetsFrom.each do |tweet|
+      hours << tweet.created_at.hour
+    end
+    hours
+  end
+  def avgTweetTime
 
+    tweetTimes.inject(:+)/tweetTimes.length
+  end
 
+  def twitterStats
+    data ={tweets: tweetsText}
+  end
+end
 
-
-
+user= User.new({handle: "DukeGreene", client:client})
+p user.avgTweetTimes
 
 # getTweetsFrom('yaboybillnye', 4, client)
-	
+
 
 # HOW TO RETWEET
 
@@ -67,7 +88,7 @@ end
 # end
 
 
-# users = ["sradloff23"]	
+# users = ["sradloff23"]
 # users.each do |user|
 # 	recent_tweets = client.user_timeline(user).take(5)
 # 	recent_tweets.each do |tweet|
