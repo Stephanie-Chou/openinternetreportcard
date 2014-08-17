@@ -17,6 +17,7 @@ class User
       tweets << tweet.text
     end
     tweets
+    p tweets
   end
 
   def tweetTimes
@@ -28,12 +29,14 @@ class User
   end
 
   def avgTweetTime
-    tweetTimes.inject(:+)/tweetTimes.length
+    return  tweetTimes.nil? ?  -1 : tweetTimes.inject(:+)/tweetTimes.length
   end
 
   def birdType
     time = avgTweetTime
-    if 23 < time || time < 4
+    if time <0
+      return "not a bird"
+    elsif 23 < time || time < 4
       return "a night owl"
     elsif time < 9
       return "an early bird"
